@@ -1,0 +1,66 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:12.13.1
+  working_directory: ~/medwing-ui
+
+aliases:
+  - &save_dependencies
+    key: v1-dependencies-{{ checksum "yarn.lock" }}
+    paths:
+      - node_modules
+  - &restore_dependencies
+    keys:
+      - v1-dependencies-{{ checksum "yarn.lock" }}
+      - v1-dependencies-
+
+version: 2
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - run:
+          name: Build
+          command: echo "test"
+
+  deploy_production:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/medwing-ui
+      - checkout
+      - restore_cache: *restore_dependencies
+      - run: |
+          if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
+            sudo npm install -g yarn@latest
+            yarn install
+          fi
+      - save_cache: *save_dependencies
+
+      - run: yarn build
+      - persist_to_workspace:
+          root: ~/medwing-ui
+          paths:
+            - build
+            - lib
+            - package.json
+      - run:
+          name: Authenticate with registry
+          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
+      - run:
+          name: Publish package
+          command: npm publish
+      - store_artifacts:
+          path: ~/test-ui/lib
+          destination: production-dist
+
+workflows:
+  version: 2
+
+  deployment_production:
+    jobs:
+      - deploy_production:
+          filters:
+            branches:
+              only:
+                - master
