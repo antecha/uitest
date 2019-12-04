@@ -13,22 +13,11 @@ aliases:
       - v1-dependencies-{{ checksum "yarn.lock" }}
       - v1-dependencies-
 
-version: 2
+version: 2.1
 
-jobs:
-  build:
-    <<: *defaults
+commands:
+  install_dependencies:
     steps:
-      - run:
-          name: Build
-          command: echo "test"
-
-  deploy_production:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/medwing-ui
-      - checkout
       - restore_cache: *restore_dependencies
       - run: |
           if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
@@ -37,13 +26,25 @@ jobs:
           fi
       - save_cache: *save_dependencies
 
+  build_production:
+    steps:
+      - checkout
+      - install_dependencies
       - run: yarn build
       - persist_to_workspace:
-          root: ~/medwing-ui
+          root: ~/medwing-admin
           paths:
             - build
             - lib
             - package.json
+
+jobs:
+  deploy_production:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/medwing-ui
+      - build_production
       - run:
           name: Authenticate with registry
           command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
@@ -55,12 +56,8 @@ jobs:
           destination: production-dist
 
 workflows:
-  version: 2
+  version: 2.1
 
   deployment_production:
     jobs:
-      - deploy_production:
-          filters:
-            branches:
-              only:
-                - master
+      - deploy_production
