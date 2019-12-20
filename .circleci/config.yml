@@ -16,6 +16,11 @@ aliases:
 version: 2.1
 
 commands:
+  authenticate_npm_registry:
+    steps:
+      - run:
+          name: Authenticate with registry
+          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/.npmrc
   install_dependencies:
     steps:
       - restore_cache: *restore_dependencies
@@ -37,27 +42,51 @@ commands:
             - build
             - lib
             - package.json
+  npm_publish:
+    steps:
+      - run:
+          name: Publish package
+          command: npm publish
 
 jobs:
-  deploy_production:
+  test_jest:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_dependencies
+      - build_production
+
+  build_production:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/medwing-ui
       - build_production
-      - run:
-          name: Authenticate with registry
-          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/.npmrc
-      - run:
-          name: Publish package
-          command: npm publish
       - store_artifacts:
           path: ~/test-ui/lib
           destination: production-dist
-
+  publish_package:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/medwing-ui
+      - authenticate_npm_registry
+      - npm_publish
 workflows:
   version: 2.1
 
+  development:
+    jobs:
+      - test_jest
+
   deployment_production:
     jobs:
-      - deploy_production
+      - build_production
+      - publish_package:
+          requires:
+            - build_production
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
