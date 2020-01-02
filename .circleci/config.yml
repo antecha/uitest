@@ -1,7 +1,7 @@
 defaults: &defaults
   docker:
     - image: circleci/node:12.13.1
-  working_directory: ~/medwing-ui
+  working_directory: ~/uitest
 
 aliases:
   - &save_dependencies
@@ -15,78 +15,53 @@ aliases:
 
 version: 2.1
 
-commands:
-  authenticate_npm_registry:
-    steps:
-      - run:
-          name: Authenticate with registry
-          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/.npmrc
+jobs:
   install_dependencies:
     steps:
       - restore_cache: *restore_dependencies
-      - run: |
-          if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
-            sudo npm install -g yarn@latest
-            yarn install
-          fi
+      - run: sudo npm install -g yarn@latest
+      - run: yarn install
       - save_cache: *save_dependencies
 
+
   build_production:
+    <<: *defaults
     steps:
-      - checkout
-      - install_dependencies
+      - attach_workspace:
+          at: ~/uitest
       - run: yarn build
       - persist_to_workspace:
-          root: ~/medwing-ui
+          root: ~/uitest
           paths:
             - build
             - lib
             - package.json
-  npm_publish:
-    steps:
-      - run:
-          name: Publish package
-          command: npm publish
-
-jobs:
-  test_jest:
-    <<: *defaults
-    steps:
-      - checkout
-      - install_dependencies
-      - build_production
-
-  build_production:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/medwing-ui
-      - build_production
       - store_artifacts:
           path: ~/test-ui/lib
           destination: production-dist
+
   publish_package:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/medwing-ui
-      - authenticate_npm_registry
-      - npm_publish
+          at: ~/uitest
+      - run: npx semantic-release
+      - run: echo "//npm.pkg.github.com/:_authToken=$GH_TOKEN" > ~/.npmrc
+      - run: npm publish
+
 workflows:
   version: 2.1
 
   development:
     jobs:
-      - test_jest
+      # - test_jest
 
-  deployment_production:
+  publish:
     jobs:
+      - install_dependencies
       - build_production
+          requires:
+            - install_dependencies
       - publish_package:
           requires:
             - build_production
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
