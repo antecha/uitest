@@ -46,7 +46,6 @@ jobs:
           at: ~/uitest
       - run: echo "//npm.pkg.github.com/:_authToken=$GH_TOKEN" > ~/uitest/.npmrc
       - run: npx semantic-release
-      - run: npm publish
 
 workflows:
   version: 2.1
