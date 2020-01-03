@@ -17,49 +17,44 @@ version: 2.1
 
 jobs:
   install_dependencies:
+    <<: *defaults
     steps:
+      - checkout
       - restore_cache: *restore_dependencies
       - run: sudo npm install -g yarn@latest
       - run: yarn install
       - save_cache: *save_dependencies
 
-
   build_production:
     <<: *defaults
     steps:
-      - attach_workspace:
-          at: ~/uitest
+      - checkout
+      - restore_cache: *restore_dependencies
       - run: yarn build
+      - run: npx semantic-release
       - persist_to_workspace:
           root: ~/uitest
-          paths:
-            - build
-            - lib
-            - package.json
+          paths: .
       - store_artifacts:
-          path: ~/test-ui/lib
-          destination: production-dist
+          path: ~/uitest/build
 
   publish_package:
     <<: *defaults
     steps:
+      - checkout
+      - restore_cache: *restore_dependencies
       - attach_workspace:
           at: ~/uitest
-      - run: npx semantic-release
-      - run: echo "//npm.pkg.github.com/:_authToken=$GH_TOKEN" > ~/.npmrc
+      - run: echo "//npm.pkg.github.com/:_authToken=$GH_TOKEN" > ~/uitest/.npmrc
       - run: npm publish
 
 workflows:
   version: 2.1
 
-  development:
-    jobs:
-      # - test_jest
-
   publish:
     jobs:
       - install_dependencies
-      - build_production
+      - build_production:
           requires:
             - install_dependencies
       - publish_package:
