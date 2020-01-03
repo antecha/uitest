@@ -5,12 +5,12 @@ defaults: &defaults
 
 aliases:
   - &save_dependencies
-    key: v1-dependencies-{{ checksum "yarn.lock" }}
+    key: v1-dependencies-{{ checksum "package-lock.lock" }}
     paths:
       - node_modules
   - &restore_dependencies
     keys:
-      - v1-dependencies-{{ checksum "yarn.lock" }}
+      - v1-dependencies-{{ checksum "package-lock.lock" }}
       - v1-dependencies-
 
 version: 2.1
@@ -21,8 +21,8 @@ jobs:
     steps:
       - checkout
       - restore_cache: *restore_dependencies
-      - run: sudo npm install -g yarn@latest
-      - run: yarn install
+      - run: sudo npm install -g npm@latest
+      - run: npm install
       - save_cache: *save_dependencies
 
   build_production:
@@ -30,8 +30,7 @@ jobs:
     steps:
       - checkout
       - restore_cache: *restore_dependencies
-      - run: yarn build
-      - run: npx semantic-release
+      - run: npm build
       - persist_to_workspace:
           root: ~/uitest
           paths: .
@@ -46,6 +45,7 @@ jobs:
       - attach_workspace:
           at: ~/uitest
       - run: echo "//npm.pkg.github.com/:_authToken=$GH_TOKEN" > ~/uitest/.npmrc
+      - run: npx semantic-release
       - run: npm publish
 
 workflows:
