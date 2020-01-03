@@ -5,12 +5,12 @@ defaults: &defaults
 
 aliases:
   - &save_dependencies
-    key: v1-dependencies-{{ checksum "package-lock.lock" }}
+    key: v1-dependencies-{{ checksum "package-lock.json" }}
     paths:
       - node_modules
   - &restore_dependencies
     keys:
-      - v1-dependencies-{{ checksum "package-lock.lock" }}
+      - v1-dependencies-{{ checksum "package-lock.json" }}
       - v1-dependencies-
 
 version: 2.1
