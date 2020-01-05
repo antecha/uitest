@@ -25,7 +25,7 @@ jobs:
       - run: npm install
       - save_cache: *save_dependencies
 
-  test:
+  test_lint:
     <<: *defaults
     steps:
       - checkout
@@ -57,10 +57,20 @@ jobs:
 workflows:
   version: 2.1
 
-  publish:
+  development:
     jobs:
       - install_dependencies
-      - test
+      - test_lint:
+          requires:
+            - install_dependencies
+            
+  publish:
+    jobs:
+      - install_dependencies:
+          filters:
+            branches:
+              only:
+                - master
       - build_production:
           requires:
             - install_dependencies
