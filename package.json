@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "yarn build",
     "build": "tsc",
+    "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
+    "test:lint":"tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet",
     "start": "styleguidist server",
     "build:styleguide": "styleguidist build"
   },

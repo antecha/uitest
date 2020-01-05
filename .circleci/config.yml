@@ -25,6 +25,13 @@ jobs:
       - run: npm install
       - save_cache: *save_dependencies
 
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *restore_dependencies
+      - run: npm run test:lint
+
   build_production:
     <<: *defaults
     steps:
@@ -53,6 +60,7 @@ workflows:
   publish:
     jobs:
       - install_dependencies
+      - test
       - build_production:
           requires:
             - install_dependencies
