@@ -5,13 +5,13 @@ defaults: &defaults
 
 aliases:
   - &save_dependencies
-    key: v1-dependencies-{{ checksum "yarn.lock" }}
+    key: v1.01-dependencies-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
   - &restore_dependencies
     keys:
-      - v1-dependencies-{{ checksum "yarn.lock" }}
-      - v1-dependencies-
+      - v1.01-dependencies-{{ checksum "yarn.lock" }}
+      - v1.01-dependencies-
 
 version: 2.1
 

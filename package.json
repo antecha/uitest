@@ -8,7 +8,7 @@
     "prepare": "yarn build",
     "build": "rollup -c",
     "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
-    "test:lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet",
+    "test:lint": "tsc --noEmit && eslint 'src/components/**/*.{js,ts,tsx}' --quiet",
     "start": "styleguidist server",
     "build:styleguide": "styleguidist build"
   },
