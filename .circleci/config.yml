@@ -57,7 +57,11 @@ workflows:
 
   development:
     jobs:
-      - install_dependencies
+      - install_dependencies:
+          filters:
+            branches:
+              ignore:
+                - master
       - test_lint:
           requires:
             - install_dependencies
