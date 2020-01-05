@@ -8,7 +8,7 @@
     "prepare": "yarn build",
     "build": "rollup -c",
     "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
-    "test:lint":"tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet",
+    "test:lint": "tsc --noEmit && eslint 'src/components/**/*.{js,ts,tsx}' --quiet",
     "start": "styleguidist server",
     "build:styleguide": "styleguidist build"
   },
@@ -30,10 +30,12 @@
     "@babel/preset-react": "^7.7.0",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
+    "@types/styled-components": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^2.8.0",
     "@typescript-eslint/parser": "^2.8.0",
     "autoprefixer": "^9.7.1",
     "babel-loader": "^8.0.6",
+    "babel-plugin-styled-components": "^1.10.6",
     "eslint": "^6.7.1",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
@@ -46,17 +48,20 @@
     "react-dom": "^16.11.0",
     "react-styleguidist": "^10.2.0",
     "rollup": "^1.26.5",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript2": "^0.25.2",
     "style-loader": "^1.0.0",
+    "styled-components": "^4.4.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2"
   },
   "peerDependencies": {
     "react": "^16.x",
-    "react-dom": "^16.x"
+    "react-dom": "^16.x",
+    "styled-components": "^4.x"
   },
   "dependencies": {}
 }
