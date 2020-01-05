@@ -1,12 +1,12 @@
 {
   "name": "@antecha/uitest",
   "version": "0.1.0",
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
+  "main": "build/index.js",
+  "module": "build/index.es.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "yarn build",
-    "build": "tsc",
+    "build": "rollup -c",
     "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
     "test:lint":"tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet",
     "start": "styleguidist server",
@@ -21,7 +21,6 @@
   },
   "license": "ISC",
   "files": [
-    "lib/**/*",
     "build/**/*"
   ],
   "devDependencies": {
