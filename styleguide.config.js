@@ -1,5 +1,6 @@
 module.exports = {
   components: 'src/components/**/*.tsx',
+  styleguideDir: 'docs/',
   webpackConfig: {
     module: {
       rules: [
@@ -15,4 +16,6 @@ module.exports = {
       ],
     },
   },
+  resolver: require('react-docgen').resolver.findAllComponentDefinitions,
+  propsParser: require('react-docgen-typescript').withDefaultConfig({}).parse,
 };
