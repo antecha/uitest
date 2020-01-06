@@ -31,6 +31,13 @@ jobs:
       - checkout
       - restore_cache: *restore_dependencies
       - run: yarn run test:lint
+  
+  test_jest:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *restore_dependencies
+      - run: yarn run test:ci
 
   build_production:
     <<: *defaults
@@ -65,6 +72,9 @@ workflows:
       - test_lint:
           requires:
             - install_dependencies
+      - test_jest:
+          requires:
+            - install_dependencies
             
   publish:
     jobs:
@@ -73,9 +83,6 @@ workflows:
             branches:
               only:
                 - master
-      - build_production:
-          requires:
-            - install_dependencies
       - publish_package:
           requires:
-            - build_production
+            - install_dependencies

@@ -1,21 +1,12 @@
 import React, { ReactElement } from 'react';
-import styled from 'styled-components';
-
-import './styles.css';
-
-const StyledButton = styled.button`
-  background-color: #fff;
-  height: 40px;
-  border: 1px solid red;
-  border-radius: 4px;
-`;
+import { StyledButton } from './styles';
 
 export interface ButtonProps {
-  className: string;
+  className?: string;
 }
 
 const Button = ({ className }: ButtonProps): ReactElement => {
-  return <StyledButton className={`button ${className}`}>Click Me again!</StyledButton>;
+  return <StyledButton className={`button ${className || ''}`}>Click Me again!</StyledButton>;
 };
 
 // export { Button };
