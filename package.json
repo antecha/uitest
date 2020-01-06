@@ -10,7 +10,6 @@
     "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
     "test:ci": "yarn test --ci",
     "test:lint": "tsc --noEmit && eslint 'src/components/**/*.{js,ts,tsx}' --quiet",
-    "prepare": "yarn build",
     "build": "rollup -c",
     "build:styleguide": "styleguidist build"
   },

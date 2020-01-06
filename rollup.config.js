@@ -16,7 +16,6 @@ export default {
       file: pkg.module,
     },
   ],
-  // globals: { 'styled-components': 'styled' },
   plugins: [
     peerDepsExternal(),
     tsPlugin({

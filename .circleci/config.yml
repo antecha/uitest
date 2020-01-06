@@ -39,18 +39,6 @@ jobs:
       - restore_cache: *restore_dependencies
       - run: yarn run test:ci
 
-  build_production:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *restore_dependencies
-      - run: yarn build
-      - persist_to_workspace:
-          root: ~/uitest
-          paths: .
-      - store_artifacts:
-          path: ~/uitest/build
-
   publish_package:
     <<: *defaults
     steps:
