@@ -18,7 +18,7 @@
     "url": "https://github.com/antecha/uitest"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/@antecha"
   },
   "license": "ISC",
   "files": [
