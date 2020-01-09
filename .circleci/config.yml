@@ -31,13 +31,30 @@ jobs:
       - checkout
       - restore_cache: *restore_dependencies
       - run: yarn run test:lint
-  
+
   test_jest:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: *restore_dependencies
       - run: yarn run test:ci
+
+  deploy_staging:
+    <<: *defaults
+    steps:
+      - run: echo ${CIRCLE_BRANCH}
+      - run: curl -X POST -d {} ${NETLIFY_API_PRODUCTION}?trigger_branch=staging&trigger_title=circle2staging
+
+  deploy_production:
+    <<: *defaults
+    steps:
+      - run: curl -X POST -d {} ${NETLIFY_API_PRODUCTION}
+
+  deploy_preview:
+    <<: *defaults
+    steps:
+      - run: echo previewURL ${CIRCLE_BRANCH}.antecha-uitest.netlify.com
+      - run: curl -X POST -d {} ${NETLIFY_API_PRODUCTION}?trigger_branch=${CIRCLE_BRANCH}&trigger_title=circle2${CIRCLE_BRANCH}
 
   publish_package:
     <<: *defaults
@@ -56,6 +73,7 @@ workflows:
           filters:
             branches:
               ignore:
+                - staging
                 - master
       - test_lint:
           requires:
@@ -63,7 +81,17 @@ workflows:
       - test_jest:
           requires:
             - install_dependencies
-            
+      # - deploy_preview:
+      #     type: approval
+
+  staging:
+    jobs:
+      - deploy_staging:
+          filters:
+            branches:
+              only:
+                - staging
+
   publish:
     jobs:
       - install_dependencies:
@@ -74,3 +102,6 @@ workflows:
       - publish_package:
           requires:
             - install_dependencies
+      - deploy_production:
+          requires:
+            - publish_package
