@@ -81,8 +81,8 @@ workflows:
       - test_jest:
           requires:
             - install_dependencies
-      # - deploy_preview:
-      #     type: approval
+      - deploy_preview:
+          type: approval
 
   staging:
     jobs:
