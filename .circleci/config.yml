@@ -69,20 +69,24 @@ workflows:
 
   development:
     jobs:
-      - install_dependencies:
-          filters:
-            branches:
-              ignore:
-                - staging
-                - master
+      - install_dependencies
+      # filters:
+      #   branches:
+      #     ignore:
+      #       - staging
       - test_lint:
           requires:
             - install_dependencies
       - test_jest:
           requires:
             - install_dependencies
-      - deploy_preview:
-          type: approval
+      # - deploy_preview:
+      #     type: approval
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - staging
+      #           - master
 
   staging:
     jobs:
