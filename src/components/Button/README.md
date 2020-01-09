@@ -1,6 +1,6 @@
 Button examples:
 
-# test release 1.3.5
+# test release 1.3.6
 
 ```js
 <Button />
