@@ -1,5 +1,5 @@
 {
-  "name": "@antecha/uitest",
+  "name": "@antecha/randomName",
   "version": "0.1.2",
   "main": "build/index.js",
   "module": "build/index.es.js",
